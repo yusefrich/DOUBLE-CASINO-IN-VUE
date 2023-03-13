@@ -27,7 +27,10 @@
                     </span>
                 </div>
             </div>
-            <roll :etapa="etapas[indiceEtapa]" :numGerado="numeroGerado" />
+            <span class="text-white fw-bold fs-5">
+                Numero da roleta: {{ numeroDaRoleta }}
+            </span>
+            <roll :etapa="etapas[indiceEtapa]" :winnerNumber="numeroGerado" @number-roll="atualizarNumero" />
             <div v-if="indiceEtapa === 2">
                 <p class="text-white">Double girou: {{ numeroGerado }}</p>
                 <p class="text-white" v-if="resultado === 'Parabéns! Você ganhou!'">Você ganhou!</p>
@@ -53,7 +56,9 @@ export default {
             valorAposta: null,
             resultado: null,
             numeroGerado: null,
-            wallet: 500
+            numtest: 6,
+            numeroDaRoleta: '',
+            wallet: 500,
         }
     },
     mounted() {
@@ -71,6 +76,9 @@ export default {
         }, 100)
     },
     methods: {
+        atualizarNumero(num) {
+            this.numeroDaRoleta = num.num
+        },
         iniciarJogo() {
             if (this.valorAposta > this.wallet) {
                 alert('Valor da aposta é maior do que a carteira')
@@ -85,10 +93,11 @@ export default {
             // this.wallet -= this.valorAposta
         },
         gerarNumero() {
-            this.numeroGerado = Math.floor(Math.random() * 15) + 1
+            this.numeroGerado = this.numeroDaRoleta;
         },
         resetGame() {
-            this.corSelecionada = null
+            this.corSelecionada = null,
+            this.numeroDaRoleta = null
         },
         avaliarResultado() {
             if (this.numeroGerado <= 7 && this.corSelecionada === "vermelho" && this.corSelecionada != null && this.valorAposta <= this.wallet) {

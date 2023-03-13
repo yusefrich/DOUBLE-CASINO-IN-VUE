@@ -5,7 +5,7 @@
                 {{ etapa }}
             </span>
             <span class="text-primary fw-bold">
-                {{ numGerado }}
+                {{ winnerNumber }}
             </span>
             <div class="app">
                 <div class="scopeHidden">
@@ -28,14 +28,14 @@
 export default {
     data() {
         return {
-            numbers: Array.from({ length: 25 }, () => Math.floor(Math.random() * 15) + 1),
+            numbers: Array.from({ length: 15 }, () => Math.floor(Math.random() * 15) + 1),
             canSpin: true,
-            list: null
+            list: null, 
         }
     },
     props: {
         etapa: String,
-        numGerado: ''
+        winnerNumber: ''
     },
     mounted() {
         if (this.$refs.list) {
@@ -45,28 +45,40 @@ export default {
     },
     methods: {
         start() {
-            if (!this.list) {
-                return;
-            }
-
-            this.numbers = Array.from({ length: 25 }, () => Math.floor(Math.random() * 15) + 1);
-
-            const move = -150 * 15;
-            this.list.style.left = move + 'px';
-
-            if (this.$refs.list) {
-                const index = -Math.floor((move + this.$refs.list.offsetWidth / 2 / -150) / 150) + 1;
-                if (index >= 0 && index < this.$refs.listItem.length) {
-                    this.$refs.listItem[index].classList.add('this-list');
+            if (this.etapa === 'Girando...') {
+                if (!this.list) {
+                    return;
                 }
-                console.log(this.numbers[index]);
 
-                this.canSpin = false;
-                setTimeout(() => {
-                    this.list.style.left = '0';
-                    this.$refs.listItem.forEach(li => li.style.background = '');
-                    this.canSpin = true;
-                }, 15000);
+                this.numbers = Array.from({ length: 25 }, () => Math.floor(Math.random() * 15) + 1);
+
+                const move = -150 * 15;
+                this.list.style.left = move + 'px';
+
+                //null checking
+                if (this.$refs.list) {
+                    const index = -Math.floor((move + this.$refs.list.offsetWidth / 2 / -150) / 150) + 1;
+                    console.log(index);
+                    if (index >= 0 && index < this.$refs.listItem.length) {
+                        this.$refs.listItem[index].classList.add('this-list');
+                    }
+                    this.$emit('number-roll', { num: this.numbers[index] })
+                    console.log(`numero vencedor: ${this.numbers[index]}`);
+
+                    this.canSpin = false;
+
+                    const totalTime = 10000; // 10 segundos
+                    let elapsedTime = 0;
+                    const interval = setInterval(() => {
+                        elapsedTime += 100;
+                        if (elapsedTime >= totalTime) {
+                            clearInterval(interval);
+                            this.list.style.left = '0';
+                            this.$refs.listItem.forEach(li => li.style.background = '');
+                            this.canSpin = true;
+                        }
+                    }, 100);
+                }
             }
         },
         autoSpin() {
@@ -84,19 +96,6 @@ export default {
 </script>
 
 <style scoped>
-/* body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-} */
-
 .app {
     color: #e8e8e8;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
@@ -118,28 +117,6 @@ export default {
 
 .bg-black {
     background-color: #000;
-}
-
-.app>.btn {
-    position: relative;
-    left: 50%;
-    transform: translate(-50%, 20px);
-    padding: 10px 30px;
-
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    background: #4c4c4c;
-    color: white;
-
-    cursor: pointer;
-    transition: 0.2s ease;
-}
-
-.app>.btn:hover {
-    background: #2f2f2f;
-    letter-spacing: 3px;
-    box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.5);
 }
 
 .scopeHidden {
