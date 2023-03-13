@@ -1,16 +1,11 @@
 <template>
-    <div class="container d-flex aling-items-center justify-content-center  w-100">
+    <div class=" d-flex aling-items-center justify-content-center  w-100">
         <div>
-            <span class="text-primary fw-bold">
-                {{ etapa }}
-            </span>
-            <span class="text-primary fw-bold">
-                {{ winnerNumber }}
-            </span>
             <div class="app">
+                <img class="arrow-top" src="../assets/arrowTop.png" alt="" width="50" height="50" />
                 <div class="scopeHidden">
                     <ul ref="list">
-                        <li v-for="(value, index) in numbers" :key="index" :class="[(index % 2) ? 'middle' : '',
+                        <li v-for="(value, index) in numbers" :key="index" class="list-item-style" :class="[(index % 2) ? 'middle' : '',
                         (value >= 1 && value <= 7) ? 'bg-red' : '',
                         (value >= 8 && value <= 14) ? 'bg-black' : '',
                         (value === 15) ? 'bg-white' : '']" ref="listItem">
@@ -30,7 +25,7 @@ export default {
         return {
             numbers: Array.from({ length: 15 }, () => Math.floor(Math.random() * 15) + 1),
             canSpin: true,
-            list: null, 
+            list: null,
         }
     },
     props: {
@@ -86,7 +81,7 @@ export default {
                 if (this.canSpin) {
                     this.start();
                 }
-            }, 2000);
+            }, 4000);
         }
     },
     created() {
@@ -102,8 +97,15 @@ export default {
     font-size: 20px;
 }
 
+.arrow-top {
+    position: relative;
+    z-index: 1;
+    left: 50%;
+    transform: translate(-50%, 25px);
+}
+
 .this-list {
-    border: 3px solid #00ff1a;
+    /* border: 3px solid #00ff1a; */
 }
 
 .bg-white {
@@ -111,8 +113,14 @@ export default {
     color: #000;
 }
 
+.list-item-style {
+    font-size: 25px;
+    border: 3px solid #2f2f2f;
+    border-radius: 5px;
+}
+
 .bg-red {
-    background-color: #ff0000;
+    background-color: #ff0037;
 }
 
 .bg-black {
