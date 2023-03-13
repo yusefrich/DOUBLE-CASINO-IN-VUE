@@ -15,3 +15,15 @@ export default {
   }
 }
 </script>
+
+<style>
+* {
+  margin: 0;
+  box-sizing: border-box;
+  padding: 0;
+}
+
+body {
+  background-color: rgb(23, 18, 18);
+}
+</style>
