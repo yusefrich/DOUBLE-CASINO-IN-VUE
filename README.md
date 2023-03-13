@@ -1,6 +1,6 @@
 # double-copy
 
-<img align="right" alt="GIF" width="241" height="428"  src="[https://media.discordapp.net/attachments/822224411947434054/888119394096533534/Screenshot_20210916-144728_Expo_Go.jpg?width=241&height=428](https://media.discordapp.net/attachments/970012416140263444/1084677224088748072/Roleta.png?width=821&height=432)" />
+<img align="right" alt="GIF" width="241" height="428"  src="[[https://media.discordapp.net/attachments/822224411947434054/888119394096533534/Screenshot_20210916-144728_Expo_Go.jpg?width=241&height=428](https://media.discordapp.net/attachments/970012416140263444/1084677224088748072/Roleta.png?width=821&height=432)](https://discord.com/channels/@me/970012416140263444/1084677224332009534)" />
 
 ## Build Setup
 
