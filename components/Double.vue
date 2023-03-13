@@ -1,6 +1,5 @@
 <template>
     <div>
-        <roll/>
         <div class="container my-5">
             <div>
                 <span class="text-white">
@@ -28,6 +27,7 @@
                     </span>
                 </div>
             </div>
+            <roll />
             <div v-if="indiceEtapa === 2">
                 <p class="text-white">Double girou: {{ numeroGerado }}</p>
                 <p class="text-white" v-if="resultado === 'Parabéns! Você ganhou!'">Você ganhou!</p>

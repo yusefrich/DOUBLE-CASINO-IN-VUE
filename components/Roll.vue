@@ -1,10 +1,13 @@
 <template>
-    <div class="container d-flex aling-items-center justify-content-center w-100">
+    <div class="container d-flex aling-items-center justify-content-center mt-5 w-100">
         <div>
             <div class="app">
                 <div class="scopeHidden">
-                    <ul>
-                        <li v-for="(value, index) in numbers" :class="[(index % 2) ? 'middle' : '']">
+                    <ul ref="list">
+                        <li v-for="(value, index) in numbers" :key="index" :class="[(index % 2) ? 'middle' : '',
+                        (value >= 1 && value <= 7) ? 'bg-red' : '',
+                        (value >= 8 && value <= 14) ? 'bg-black' : '',
+                        (value === 15) ? 'bg-white' : '']" ref="listItem">
                             {{ value }}
                         </li>
                     </ul>
@@ -14,31 +17,36 @@
         </div>
     </div>
 </template>
-  
+
 <script>
 export default {
     data() {
         return {
-            numbers: Array.from({ length: 25 }, () => Math.floor(Math.random() * 14))
+            numbers: Array.from({ length: 25 }, () => Math.floor(Math.random() * 15) + 1)
         }
+    },
+    mounted() {
+        this.list = this.$refs.list;
+        this.listItem = this.$refs.listItem[0];
     },
     methods: {
         start() {
-            this.numbers = Array.from({ length: 25 }, () => Math.floor(Math.random() * 14));
+            this.numbers = Array.from({ length: 25 }, () => Math.floor(Math.random() * 15) + 1);
 
             const move = -150 * 15;
-            const ul = document.querySelector('.scopeHidden > ul');
-            ul.style.left = move + 'px';
+            this.list.style.left = move + 'px';
 
-            const index = -Math.floor((move + (document.querySelector('.scopeHidden').offsetWidth / 2) / -150) / 150) + 1;
-            const li = document.querySelectorAll('.scopeHidden > ul > li')[index];
-            li.style.background = 'red';
+            const index = -Math.floor((move + (this.$refs.list.offsetWidth / 2) / -150) / 150) + 1;
+            if (index >= 0 && index < this.$refs.listItem.length) {
+                this.$refs.listItem[index].classList.add('this-list');
+            }
+            console.log(this.numbers[index]);
 
             // resetando a roleta
             setTimeout(() => {
-                ul.style.left = '0';
-                document.querySelectorAll('.scopeHidden > ul > li').forEach(li => li.style.background = '');
-            }, 10000);
+                this.list.style.left = '0';
+                this.$refs.listItem.forEach(li => li.style.background = '');
+            }, 15000);
         }
     }
 }
@@ -63,7 +71,22 @@ export default {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 20px;
 }
+.this-list {
+    border: 3px solid #00ff1a;
+}
 
+.bg-white {
+    background-color: #fff;
+    color: #000;
+}
+
+.bg-red {
+    background-color: #ff0000;
+}
+
+.bg-black {
+    background-color: #000;
+}
 
 .app>.btn {
     position: relative;
@@ -117,6 +140,6 @@ export default {
 }
 
 .scopeHidden>ul>li.middle {
-    background: #282828;
+    /* background: #000000; */
 }
 </style>
