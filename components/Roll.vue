@@ -1,6 +1,12 @@
 <template>
-    <div class="container d-flex aling-items-center justify-content-center mt-5 w-100">
+    <div class="container d-flex aling-items-center justify-content-center  w-100">
         <div>
+            <span class="text-primary fw-bold">
+                {{ etapa }}
+            </span>
+            <span class="text-primary fw-bold">
+                {{ numGerado }}
+            </span>
             <div class="app">
                 <div class="scopeHidden">
                     <ul ref="list">
@@ -13,41 +19,66 @@
                     </ul>
                 </div>
             </div>
-            <button class="btn" @click="start()">Girar</button>
         </div>
     </div>
 </template>
-
+  
 <script>
+
 export default {
     data() {
         return {
-            numbers: Array.from({ length: 25 }, () => Math.floor(Math.random() * 15) + 1)
+            numbers: Array.from({ length: 25 }, () => Math.floor(Math.random() * 15) + 1),
+            canSpin: true,
+            list: null
         }
     },
+    props: {
+        etapa: String,
+        numGerado: ''
+    },
     mounted() {
-        this.list = this.$refs.list;
+        if (this.$refs.list) {
+            this.list = this.$refs.list;
+        }
         this.listItem = this.$refs.listItem[0];
     },
     methods: {
         start() {
+            if (!this.list) {
+                return;
+            }
+
             this.numbers = Array.from({ length: 25 }, () => Math.floor(Math.random() * 15) + 1);
 
             const move = -150 * 15;
             this.list.style.left = move + 'px';
 
-            const index = -Math.floor((move + (this.$refs.list.offsetWidth / 2) / -150) / 150) + 1;
-            if (index >= 0 && index < this.$refs.listItem.length) {
-                this.$refs.listItem[index].classList.add('this-list');
-            }
-            console.log(this.numbers[index]);
+            if (this.$refs.list) {
+                const index = -Math.floor((move + this.$refs.list.offsetWidth / 2 / -150) / 150) + 1;
+                if (index >= 0 && index < this.$refs.listItem.length) {
+                    this.$refs.listItem[index].classList.add('this-list');
+                }
+                console.log(this.numbers[index]);
 
-            // resetando a roleta
-            setTimeout(() => {
-                this.list.style.left = '0';
-                this.$refs.listItem.forEach(li => li.style.background = '');
-            }, 15000);
+                this.canSpin = false;
+                setTimeout(() => {
+                    this.list.style.left = '0';
+                    this.$refs.listItem.forEach(li => li.style.background = '');
+                    this.canSpin = true;
+                }, 15000);
+            }
+        },
+        autoSpin() {
+            setInterval(() => {
+                if (this.canSpin) {
+                    this.start();
+                }
+            }, 2000);
         }
+    },
+    created() {
+        this.autoSpin();
     }
 }
 </script>
@@ -71,6 +102,7 @@ export default {
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 20px;
 }
+
 .this-list {
     border: 3px solid #00ff1a;
 }

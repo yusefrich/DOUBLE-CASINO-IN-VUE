@@ -27,7 +27,7 @@
                     </span>
                 </div>
             </div>
-            <roll />
+            <roll :etapa="etapas[indiceEtapa]" :numGerado="numeroGerado" />
             <div v-if="indiceEtapa === 2">
                 <p class="text-white">Double girou: {{ numeroGerado }}</p>
                 <p class="text-white" v-if="resultado === 'Parabéns! Você ganhou!'">Você ganhou!</p>
