@@ -1,90 +1,130 @@
 <template>
-    <div class="container d-flex aling-items-center justify-content-center w-100">
+    <div class=" d-flex aling-items-center justify-content-center  w-100">
         <div>
             <div class="app">
+                <img class="arrow-top" src="../assets/arrowTop.png" alt="" width="50" height="50" />
                 <div class="scopeHidden">
-                    <ul>
-                        <li v-for="(value, index) in numbers" :class="[(index % 2) ? 'middle' : '']">
+                    <ul ref="list">
+                        <li v-for="(value, index) in numbers" :key="index" class="list-item-style" :class="[(index % 2) ? 'middle' : '',
+                        (value >= 1 && value <= 7) ? 'bg-red' : '',
+                        (value >= 8 && value <= 14) ? 'bg-black' : '',
+                        (value === 15) ? 'bg-white' : '']" ref="listItem">
                             {{ value }}
                         </li>
                     </ul>
                 </div>
             </div>
-            <button class="btn" @click="start()">Girar</button>
         </div>
     </div>
 </template>
   
 <script>
+
 export default {
     data() {
         return {
-            numbers: Array.from({ length: 25 }, () => Math.floor(Math.random() * 14))
+            numbers: Array.from({ length: 15 }, () => Math.floor(Math.random() * 15) + 1),
+            canSpin: true,
+            list: null,
         }
+    },
+    props: {
+        etapa: String,
+        winnerNumber: ''
+    },
+    mounted() {
+        if (this.$refs.list) {
+            this.list = this.$refs.list;
+        }
+        this.listItem = this.$refs.listItem[0];
     },
     methods: {
         start() {
-            this.numbers = Array.from({ length: 25 }, () => Math.floor(Math.random() * 14));
+            if (this.etapa === 'Girando...') {
+                if (!this.list) {
+                    return;
+                }
 
-            const move = -150 * 15;
-            const ul = document.querySelector('.scopeHidden > ul');
-            ul.style.left = move + 'px';
+                this.numbers = Array.from({ length: 25 }, () => Math.floor(Math.random() * 15) + 1);
 
-            const index = -Math.floor((move + (document.querySelector('.scopeHidden').offsetWidth / 2) / -150) / 150) + 1;
-            const li = document.querySelectorAll('.scopeHidden > ul > li')[index];
-            li.style.background = 'red';
+                const move = -150 * 15;
+                this.list.style.left = move + 'px';
 
-            // resetando a roleta
-            setTimeout(() => {
-                ul.style.left = '0';
-                document.querySelectorAll('.scopeHidden > ul > li').forEach(li => li.style.background = '');
-            }, 10000);
+                //null checking
+                if (this.$refs.list) {
+                    const index = -Math.floor((move + this.$refs.list.offsetWidth / 2 / -150) / 150) + 1;
+                    console.log(index);
+                    if (index >= 0 && index < this.$refs.listItem.length) {
+                        this.$refs.listItem[index].classList.add('this-list');
+                    }
+                    this.$emit('number-roll', { num: this.numbers[index] })
+                    console.log(`numero vencedor: ${this.numbers[index]}`);
+
+                    this.canSpin = false;
+
+                    const totalTime = 10000; // 10 segundos
+                    let elapsedTime = 0;
+                    const interval = setInterval(() => {
+                        elapsedTime += 100;
+                        if (elapsedTime >= totalTime) {
+                            clearInterval(interval);
+                            this.list.style.left = '0';
+                            this.$refs.listItem.forEach(li => li.style.background = '');
+                            this.canSpin = true;
+                        }
+                    }, 100);
+                }
+            }
+        },
+        autoSpin() {
+            setInterval(() => {
+                if (this.canSpin) {
+                    this.start();
+                }
+            }, 4000);
         }
+    },
+    created() {
+        this.autoSpin();
     }
 }
 </script>
 
 <style scoped>
-/* body {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-}
-
-* {
-    margin: 0;
-    padding: 0;
-    list-style: none;
-} */
-
 .app {
     color: #e8e8e8;
     font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
     font-size: 20px;
 }
 
-
-.app>.btn {
+.arrow-top {
     position: relative;
+    z-index: 1;
     left: 50%;
-    transform: translate(-50%, 20px);
-    padding: 10px 30px;
-
-    font-size: 15px;
-    font-weight: 600;
-    letter-spacing: 1px;
-    background: #4c4c4c;
-    color: white;
-
-    cursor: pointer;
-    transition: 0.2s ease;
+    transform: translate(-50%, 25px);
 }
 
-.app>.btn:hover {
-    background: #2f2f2f;
-    letter-spacing: 3px;
-    box-shadow: 0px 0px 25px rgba(0, 0, 0, 0.5);
+.this-list {
+    /* border: 3px solid #00ff1a; */
+}
+
+.bg-white {
+    background-color: #fff;
+    color: #000;
+}
+
+.list-item-style {
+    font-size: 25px;
+    border: 3px solid #2f2f2f;
+    border-radius: 5px;
+}
+
+.bg-red {
+    background-color: #ff0037;
+}
+
+.bg-black {
+    background-color: #000;
 }
 
 .scopeHidden {
@@ -117,6 +157,6 @@ export default {
 }
 
 .scopeHidden>ul>li.middle {
-    background: #282828;
+    /* background: #000000; */
 }
 </style>
